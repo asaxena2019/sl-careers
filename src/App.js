@@ -3,6 +3,7 @@ import logo from './ScottySticker.png';
 import './App.css';
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
+import CardDeck from 'react-bootstrap/Card'
 
 const cards = [1, 2];
 
@@ -65,16 +66,17 @@ function App() {
       
     <Container className="App-cardGrid" maxWidth="md">
         {cards.map(card => (
-          <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src="holder.js/100px180" />
+          <CardDeck>
+          <Card border="primary" style={{ width: '18rem' }}>
           <Card.Body>
-            <Card.Title>Card Title</Card.Title>
-            <Card.Text>
-              Some quick example text to build on the card title and make up the bulk of
-              the card's content.
-            </Card.Text>
+            <Card.Title>Name</Card.Title>
+            <Card.Text>Date Added</Card.Text>
+            <Card.Text>Link</Card.Text>
+            <Card.Text>Description</Card.Text>
+            <Card.Text>Deadline</Card.Text>
           </Card.Body>
          </Card>
+         </CardDeck>
      ))}
 </Container>
 
