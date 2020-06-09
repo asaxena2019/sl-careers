@@ -32,27 +32,10 @@
   cursor: pointer;
 }
 
-.App-cardGrid{
-  padding: 20px;
-}
-
-.App-card{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.App-cardMedia{
-  padding-top: 56.25%;
-}
-
-.App-cardContent{
-  flex-grow: 1;
-}
-
 .button1 {border-radius: 40px; background-color:red; color: white;}
 .button2 {border-radius: 40px; background-color:yellow; color: black;}
 .button3 {border-radius: 40px; background-color:orange; color: white;}
 .button4 {border-radius: 40px; background-color:green; color: white;}
 .button5 {border-radius: 40px; background-color:blue; color: white;}
 .button6 {border-radius: 40px; background-color:purple; color: white;}
+
