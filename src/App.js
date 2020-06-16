@@ -4,6 +4,7 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
+import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import InputBase from '@material-ui/core/InputBase';
@@ -70,6 +71,15 @@ const useStyles = makeStyles(theme => ({
 
 
 var rows = [];
+var rowsAll = [];
+
+var getAll = false;
+var getAllDone = false;
+var catCount = 0;
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 function App() {
 
@@ -107,6 +117,27 @@ function App() {
   function getEventsData() {
     scottyUrl = "http://192.168.1.86:4000/Events";
     getScottyData();
+    
+  }
+
+  function getSearch () {
+    console.log("Get Search");
+  }
+
+  async function getAllData(){
+    getAll = true;
+    getInternshipsData();
+    await sleep(500);
+    getJobsData();
+    await sleep(500);
+    getScholarshipData();
+    await sleep(500);
+    getResearchData();
+    await sleep(500);
+    getEventsData();
+    await sleep(500);
+
+    getAllDone = true;
   }
   
   function getScottyData() {
@@ -127,17 +158,50 @@ function App() {
       return results.json()
     })
     .then(result => {
-      //rows=(result);
       var rowsString = JSON.stringify(result);
       rowsString = rowsString.replace(/\\/g,"")
-      console.log("Rows: " + rowsString);
+      
       rows = JSON.parse(rowsString);
+      console.log("Rows: :length: " + rows.length + "  " + JSON.stringify(rowsString));
+      if(getAll)
+      {
+        
+        catCount++;
+        
+        console.log("catCount: " + catCount);
+        for(var i = 0; i < rows.length; i++){
+          var match = JSON.stringify(rows[i]).search("Engineer");
+          if(0){
+          rowsAll.push(rows[i]);
+          }
+          else {
+          if(match > 0){
+            console.log("*********  MATCH Intern **********")
+            rowsAll.push(rows[i]);
+            match =0;
+          }
+        }
+        }
+        console.log("rowsAll: :length: " + rowsAll.length + "  " + rows[0].type);
+
+//        if(rows[0].type == "Events")
+        if(catCount >= 5)
+        {
+          rows = [];
+          rows = rowsAll;
+          rowsAll = [];
+          getAll = false;
+          getAllDone = false;
+          catCount = 0;
+        } 
+      }
     setState({
         ...state,
 
       });
     })
   }
+
 
   return (
     <div>
@@ -154,6 +218,7 @@ function App() {
       <body className="App-body">
       <div className={classes.search}>
             <div className={classes.searchIcon}>
+              <SearchIcon onClick={getSearch}/>
             </div>
             <InputBase
               placeholder="Search…"
@@ -174,7 +239,7 @@ function App() {
         <button className="App-button button3" onClick={getResearchData}>Research</button>
         <button className="App-button button4" onClick={getScholarshipData}>Scholarships</button>
         <button className="App-button button5" onClick={getEventsData}>Events</button>
-        <button className="App-button button6" onClick={getScottyData}>All</button>
+        <button className="App-button button6" onClick={getAllData}>All</button>
       </body>
     </div>
     
