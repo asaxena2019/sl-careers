@@ -1,4 +1,5 @@
 import logo from './ScottySticker.png';
+import external from './external-link.png';
 import './App.css';
 import React from 'react';
 import Card from '@material-ui/core/Card';
@@ -18,6 +19,13 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
   },
+  button: {
+    margin: theme.spacing(1),
+    borderRadius: 60,
+  },
+  input: {
+    display: "none"
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -30,12 +38,17 @@ const useStyles = makeStyles(theme => ({
   cardMedia: {
     paddingTop: '56.25%', // 16:9
   },
+  typography:{
+    marginLeft: '10px',
+    marginRight: '10px',
+    marginBottom: '10px',
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: fade(theme.palette.common.white, 0.75),
     '&:hover': {
-    backgroundColor: fade(theme.palette.common.white, 0.25),
+    backgroundColor: fade(theme.palette.common.white, 1.00),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -69,13 +82,13 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-
 var rows = [];
 var rowsAll = [];
 
 var getAll = false;
-var getAllDone = false;
 var catCount = 0;
+var search = false;
+var scottyURL = "http://192.168.1.86:4000/"
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -84,60 +97,79 @@ const sleep = (milliseconds) => {
 function App() {
 
   const [state, setState] = React.useState({
-    dateAdded: '1',
-    name: 'hai',
-    link: 'www.abc.com',
-    description: 'abc',
-    deadline: '2'
+    dateAdded: 'dateAdded',
+    title: 'title',
+    company: 'company',
+    link: 'link',
+    description: 'description',
+    deadline: 'deadline',
+    image: 'imageLink',
+    tags: 'tags'
  });
 
+  const [searchstring,searchString] = React.useState('');
   const classes = useStyles();
   var scottyUrl = "";
 
   function getInternshipsData() {
-    scottyUrl = "http://192.168.1.86:4000/Internships";
+    scottyUrl = scottyURL+"Internships";
     getScottyData();
   }
 
   function getJobsData() {
-    scottyUrl = "http://192.168.1.86:4000/Jobs";
+    scottyUrl = scottyURL+"Jobs";
     getScottyData();
   }
 
   function getScholarshipData() {
-    scottyUrl = "http://192.168.1.86:4000/Scholarships";
+    scottyUrl = scottyURL+"Scholarships";
     getScottyData();
   }
 
   function getResearchData() {
-    scottyUrl = "http://192.168.1.86:4000/Research";
+    scottyUrl = scottyURL+"Research";
     getScottyData();
   }
 
   function getEventsData() {
-    scottyUrl = "http://192.168.1.86:4000/Events";
+    scottyUrl = scottyURL+"Events";
     getScottyData();
     
   }
 
-  function getSearch () {
-    console.log("Get Search");
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      getSearch();
+    }
   }
 
-  async function getAllData(){
+  function getSearch () {
+    console.log("Get Search:  " + searchstring);
+    search = true;
+    fetchData();
+  }
+
+  const handleSearchString = event => {
+    searchString(event.target.value);
+  };
+
+  function getAllData(){
+    search = false;
+    fetchData();
+  }
+
+  async function fetchData(){
     getAll = true;
     getInternshipsData();
-    await sleep(500);
+    await sleep(50);
     getJobsData();
-    await sleep(500);
+    await sleep(50);
     getScholarshipData();
-    await sleep(500);
+    await sleep(50);
     getResearchData();
-    await sleep(500);
+    await sleep(50);
     getEventsData();
-    await sleep(500);
-
-    getAllDone = true;
+    await sleep(50);
   }
   
   function getScottyData() {
@@ -170,57 +202,82 @@ function App() {
         
         console.log("catCount: " + catCount);
         for(var i = 0; i < rows.length; i++){
-          var match = JSON.stringify(rows[i]).search("Engineer");
-          if(0){
-          rowsAll.push(rows[i]);
+          var rowsLower = JSON.stringify(rows[i]).toLowerCase();
+          var searchLower = searchstring.toLowerCase();
+          var match = rowsLower.search(searchLower);
+          if(search){
+            if(match > 0){
+              console.log("*********  MATCH ********** " + searchstring)
+              rowsAll.push(rows[i]);
+              match =0;
+            }
           }
           else {
-          if(match > 0){
-            console.log("*********  MATCH Intern **********")
             rowsAll.push(rows[i]);
-            match =0;
           }
         }
-        }
+
         console.log("rowsAll: :length: " + rowsAll.length + "  " + rows[0].type);
 
-//        if(rows[0].type == "Events")
         if(catCount >= 5)
         {
           rows = [];
           rows = rowsAll;
           rowsAll = [];
           getAll = false;
-          getAllDone = false;
           catCount = 0;
         } 
       }
-    setState({
-        ...state,
-
-      });
+      setState({
+          ...state,
+        });
     })
   }
 
+window.onload = function (){
+  console.log("Done with Load");
+  getAllData();
+}
 
   return (
-    <div>
+    <div className="App">
+      
+      <div>
+        <header className="App-header">
+          <img src={logo} alt="logo" width={100} height={100}/>
+          <h1>ScottyLabs Career Page</h1>
+          <button className="App-button buttonexternal">
+            <u>Sign up for weekly newsletter</u><img src={external} alt="external" width={10} height={10}/>
+          </button>
+          <form action='https://docs.google.com/spreadsheets/d/1f0XwxpTd1p9KM9hDsEPuXDYCoDtrqQUc5Ln98LvrK3M/edit#gid=1921830028'>
+            <button className="App-button buttonexternal" type="submit">
+              <u>Submit opportunities here</u><img src={external} alt="external" width={10} height={10}/>
+            </button>
+          </form>
+        </header>
+      </div>
+      
+      <div className="App-body">
+          <button className="App-button button1" onClick={getJobsData}>Jobs</button>
+          <button className="App-button button2" onClick={getInternshipsData}>Internships</button>
+          <button className="App-button button3" onClick={getResearchData}>Research</button>
+          <button className="App-button button4" onClick={getScholarshipData}>Scholarships</button>
+          <button className="App-button button5" onClick={getEventsData}>Events</button>
+          <button className="App-button button6" onClick={getAllData}>All</button>
+      </div>
 
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} alt="logo" width={100} height={100}/>
-        <h1>ScottyLabs Career Page</h1>
-        <p>*insert description*</p>
-      </header>
-    </div>
-    
-    <div className="App">
-      <body className="App-body">
-      <div className={classes.search}>
+      <div className="App-body">
+        <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon onClick={getSearch}/>
             </div>
             <InputBase
+              id="searchString"
+              name="searchString"
+              autoComplete="searchString"
+              value={searchstring}
+              onChange={handleSearchString}
+              onKeyDown={handleKeyDown}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
@@ -228,69 +285,53 @@ function App() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </div>
-      </body>
-    </div>
-    
-    <div className="App">
-      <body className="App-body">
-        <button className="App-button button1" onClick={getJobsData}>Jobs</button>
-        <button className="App-button button2" onClick={getInternshipsData}>Internships</button>
-        <button className="App-button button3" onClick={getResearchData}>Research</button>
-        <button className="App-button button4" onClick={getScholarshipData}>Scholarships</button>
-        <button className="App-button button5" onClick={getEventsData}>Events</button>
-        <button className="App-button button6" onClick={getAllData}>All</button>
-      </body>
-    </div>
-    
-    <div className="App">
-      <body className="App-body">
-      <Container className={classes.cardGrid} maxWidth="md">
-        {/* End hero unit */}
-        <Grid container spacing={4}>
-          {rows.map(card => (
-            <Grid item key={rows.indexOf(card)} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
-              <Typography variant="subtitle1">
-                {`${card.type}`}
-                </Typography>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image="https://source.unsplash.com/random"
-                  title={rows.name}
-                />
-                  <Typography variant="h6">
-                  {`${card.name}`}
+        </div>
+      </div>
+      
+      <div className="App-body">
+        <Container className={classes.cardGrid} maxWidth="md" pt={10}>
+          {/* End hero unit */}
+          <Grid container spacing={4}>
+            {rows.map(card => (
+              <Grid item key={rows.indexOf(card)} xs={12} sm={6} md={4}>
+                <Card className={classes.card} mx="auto">
+                  <Typography variant="body1">
+                    <b>{`${card.type}`}</b>
                   </Typography>
-                <Typography variant="body1">
-                {`${card.link}`}
-                </Typography>
-                <Typography variant="body1">
-                {`${card.description}`}
-                </Typography>
-                <Typography variant="body1">
-                {`Deadline: ${card.deadline}`}
-                </Typography>
-                <Typography variant="body1">
-                  Tags
-                </Typography>
-                <Typography variant="body2">
-                {`Date Added: ${card.dateAdded}`}
-                </Typography>
-              </Card>
-            </Grid>
+                  <CardMedia
+                    className={classes.cardMedia}
+                    image={`${card.imageLink}`}
+                    title={rows.name}
+                  />
+                  <Typography variant="h6">
+                    <b>{`${card.title}`}</b><br></br>
+                    <i>{`${card.company}`}</i>
+                  </Typography>
+                  <Typography variant="body1">
+                    <form action={`${card.link}`}>
+                        <button className="App-button buttonexternal" type="submit"> 
+                        <u>Apply here</u>
+                        <img src={external} alt="external" width={10} height={10}/>
+                        </button>
+                    </form>
+                  </Typography>
+                  <Typography variant="body1" align="left" className={classes.typography}>
+                  {`${card.description}`}<br></br>
+                  <b>Deadline: </b>{`${card.deadline}`}
+                  <div className="tagContainer">
+                    {card.tags.map(topic =>(
+                      <body1 className="tagShape">{`${topic}`}</body1>
+                    ))}
+                  </div>
+                  <b>Date Added: </b>{`${card.dateAdded}`}
+                  </Typography>
+                </Card>
+              </Grid>
             ))}
           </Grid>
         </Container>
-      </body>
-    </div>
-    
-    <div className="App">
-      <body className="App-body">
-        <p>footer</p>
-      </body>
-    </div>
-    
+      </div>
+
     </div>
   );
 }
