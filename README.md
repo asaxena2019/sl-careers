@@ -1,6 +1,6 @@
 # sl-careers webpage
 
-React code for sl-careers. Will not be used on the actual website due to change in programming language.
+Frontend for SL Careers Page using React, HTML, and CSS
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
