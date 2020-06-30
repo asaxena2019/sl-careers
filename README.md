@@ -1,5 +1,7 @@
 # sl-careers webpage
 
+![](SL_Careers.png)
+
 Frontend for SL Careers Page using HTML, CSS, React, and Material UI components.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
