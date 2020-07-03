@@ -88,7 +88,8 @@ var rowsAll = [];
 var getAll = false;
 var catCount = 0;
 var search = false;
-var scottyURL = "http://192.168.1.86:4000/"
+var scottyURL=process.env.scottyURL;
+console.log(process.env.scottyURL)
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -246,10 +247,12 @@ window.onload = function (){
         <header className="App-header">
           <img src={logo} alt="logo" width={100} height={100}/>
           <h1>ScottyLabs Career Page</h1>
-          <button className="App-button buttonexternal">
-            <u>Sign up for weekly newsletter</u><img src={external} alt="external" width={10} height={10}/>
-          </button>
-          <form action='https://docs.google.com/spreadsheets/d/1f0XwxpTd1p9KM9hDsEPuXDYCoDtrqQUc5Ln98LvrK3M/edit#gid=1921830028'>
+          <form action='https://lists.andrew.cmu.edu/mailman/listinfo/sl-career'>
+            <button className="App-button buttonexternal">
+              <u>Sign up for weekly newsletter</u><img src={external} alt="external" width={10} height={10}/>
+            </button>
+          </form>
+          <form action='https://docs.google.com/forms/d/11qgZGcnggidbq4MSu5Lv1qwawSFZ1bOaOr5CYXxubnE/edit?ts=5ef13b58'>
             <button className="App-button buttonexternal" type="submit">
               <u>Submit opportunities here</u><img src={external} alt="external" width={10} height={10}/>
             </button>
