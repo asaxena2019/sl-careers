@@ -88,8 +88,7 @@ var rowsAll = [];
 var getAll = false;
 var catCount = 0;
 var search = false;
-var scottyURL=process.env.scottyURL;
-console.log(process.env.scottyURL)
+var scottyURL = process.env.REACT_APP_scottyURL
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
